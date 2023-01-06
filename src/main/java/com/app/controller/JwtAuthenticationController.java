@@ -31,8 +31,8 @@ Once response body is generated from the handler method, it converts it to JSON 
 public class JwtAuthenticationController {
 
 
-   @Autowired
-    private KafkaTemplate<String, UserDTO> kafkaTemplate;
+//   @Autowired
+//    private KafkaTemplate<String, UserDTO> kafkaTemplate;
 
     private static final String TOPIC ="Kafka_Example_json12";
 
@@ -89,7 +89,7 @@ public class JwtAuthenticationController {
         Objects.requireNonNull(password);
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-         kafkaTemplate.send(TOPIC, new UserDTO(username,"",""));
+//         kafkaTemplate.send(TOPIC, new UserDTO(username,"",""));
         } catch (DisabledException e) {
             throw new Exception("USER_DISABLED", e);
         } catch (BadCredentialsException e) {
