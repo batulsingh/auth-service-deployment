@@ -18,7 +18,7 @@ import java.util.function.Function;
 @Component
 public class JwtTokenUtil implements Serializable {
 
-    public static final long JWT_TOKEN_VALIDITY = 86400;  //timeout for token validity in seconds
+    public static final long JWT_TOKEN_VALIDITY = 300;  //timeout for token validity in seconds
 
     @Value("${jwt.secret}")
     private String secret;
