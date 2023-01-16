@@ -14,11 +14,12 @@ The @Id annotation specifies the primary key of an entity and the
 
 @Entity
 @Table(name = "usercreds")
-public class DAOUser {
+public class UserEntity {
 
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private long id;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
     @Column
     private String username;
     @Column
@@ -42,13 +43,13 @@ public class DAOUser {
     public void setPassword(String password) {
         this.password = password;
     }
-//    public long getId() {
-//        return id;
-//    }
-//
-//    public void setId(long id) {
-//        this.id = id;
-//    }
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getStatus() {
         return status;

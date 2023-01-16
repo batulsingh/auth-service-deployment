@@ -1,7 +1,7 @@
-package com.app.dao;
+package com.app.repository;
 
 
-import com.app.model.DAOUser;
+import com.app.model.UserEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +11,8 @@ This way, the service remains completely in dark about how the low-level operati
 This is known as the principle of Separation of Logic.*/
 
 @Repository
-public interface UserDao extends CrudRepository<DAOUser, Integer> {
-    DAOUser findByUsername(String username);
+public interface UserRepository extends CrudRepository<UserEntity, Long> {
+    UserEntity findByUsername(String username);
+
+    UserEntity findById(long id);
 }

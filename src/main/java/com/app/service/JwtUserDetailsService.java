@@ -1,21 +1,17 @@
 package com.app.service;
 
 import com.app.Exceptions.UserAlreadyExistsException;
-import com.app.dao.UserDao;
-import com.app.model.DAOUser;
+import com.app.repository.UserRepository;
+import com.app.model.UserEntity;
 import com.app.model.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
-import java.util.Date;
 
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
@@ -26,7 +22,7 @@ public class JwtUserDetailsService implements UserDetailsService {
     //private static final String TOPIC = "Kafka_Example_json12";
 
     @Autowired
-    private UserDao userDao;
+    private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder bcryptEncoder;
@@ -34,7 +30,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        DAOUser user = userDao.findByUsername(username);
+        UserEntity user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
@@ -45,30 +41,26 @@ public class JwtUserDetailsService implements UserDetailsService {
     }
 
     // function to save user
-    public DAOUser save(UserDTO user) throws Exception{
+    public UserEntity save(UserDTO user) throws Exception{
 
-        DAOUser newUser = new DAOUser();
+        UserEntity newUser = new UserEntity();
         newUser.setUsername(user.getUsername());
         newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
         newUser.setStatus("Blocked");
-        DAOUser ExistingUser = userDao.findByUsername(user.getUsername());
-        try {
-            if (ExistingUser != null) {
-                throw new Exception("User ALREADY EXISTS ");
-            }
+        UserEntity ExistingUser = userRepository.findByUsername(user.getUsername());
+        if (ExistingUser != null) {
+            throw new UserAlreadyExistsException("Username Unavailable");
         }
-        catch (UserAlreadyExistsException e){
-            System.out.println(e);
-        }
+
        // kafkaTemplate.send(TOPIC, new UserDTO(newUser.getUsername(), "", ""));
-        return userDao.save(newUser);
+        return userRepository.save(newUser);
     }
 
     // function to change userstatus
-    public DAOUser updateStatus(String username)  {
-        DAOUser user2 = userDao.findByUsername(username);
+    public UserEntity updateStatus(String username)  {
+        UserEntity user2 = userRepository.findByUsername(username);
         user2.setStatus("Unblocked");
-        return   userDao.save(user2);
+        return   userRepository.save(user2);
 //        return user2;
     }
 }

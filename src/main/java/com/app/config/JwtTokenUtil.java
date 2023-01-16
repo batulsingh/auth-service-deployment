@@ -18,7 +18,7 @@ import java.util.function.Function;
 @Component
 public class JwtTokenUtil implements Serializable {
 
-    public static final long JWT_TOKEN_VALIDITY = 300;  //timeout for token validity in seconds
+    public static final long JWT_TOKEN_VALIDITY = 900;  //timeout for token validity in seconds
 
     @Value("${jwt.secret}")
     private String secret;
@@ -50,9 +50,9 @@ public class JwtTokenUtil implements Serializable {
     }
 
     //generate token for user
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, long userId) {
         Map<String, Object> claims = new HashMap<>();       //hashmap stores the data in (Key, Value) pairs. To access a value one must know its key
-        return doGenerateToken(claims, userDetails.getUsername());
+        return doGenerateToken(claims, userDetails.getUsername(), userId);
     }
 
     //generate token for admin
@@ -62,10 +62,11 @@ public class JwtTokenUtil implements Serializable {
     }
 
     // token generation function
-    private String doGenerateToken(Map<String, Object> claims, String subject) {
+    private String doGenerateToken(Map<String, Object> claims, String subject, long userId) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
                 .claim("role","user")
+                .claim("userId", userId)
                 .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 

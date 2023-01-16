@@ -1,15 +1,15 @@
 package com.app.controller;
 
 
-import com.app.model.JwtRequest;
-import com.app.model.JwtResponse;
+import com.app.Exceptions.UserAlreadyExistsException;
+import com.app.model.*;
 import com.app.config.JwtTokenUtil;
-import com.app.model.UserDTO;
 import com.app.service.JwtUserDetailsService;
+import com.app.service.NoteService;
+import com.app.svc.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -18,7 +18,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
-import org.springframework.kafka.core.KafkaTemplate;
 /*Spring RestController annotation is used to create RESTful web services using Spring MVC.
 Spring RestController takes care of mapping request data to the defined request handler method.
 Once response body is generated from the handler method, it converts it to JSON or XML response.*/
@@ -28,7 +27,7 @@ Once response body is generated from the handler method, it converts it to JSON 
 
 @RestController
 @CrossOrigin("*")
-public class JwtAuthenticationController {
+public class Controller {
 
 
 //   @Autowired
@@ -45,6 +44,12 @@ public class JwtAuthenticationController {
     @Autowired
     private JwtUserDetailsService userDetailsService;
 
+    @Autowired
+    private NoteService noteService;
+
+    @Autowired
+    private UserService userService;
+
     private ResponseEntity responseEntity;
     // "/authenticate" endpoint is exposed here
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
@@ -54,7 +59,9 @@ public class JwtAuthenticationController {
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
 
-        final String token = jwtTokenUtil.generateToken(userDetails);
+        final long userId = userService.getUserIdByName(authenticationRequest.getUsername());
+
+        final String token = jwtTokenUtil.generateToken(userDetails, userId);
 
         return ResponseEntity.ok(new JwtResponse(token));
     }
@@ -74,14 +81,30 @@ public class JwtAuthenticationController {
     // "/register" endpoint is exposed here
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<?> saveUser(@RequestBody UserDTO user) throws Exception {
-
-
-        return ResponseEntity.ok(userDetailsService.save(user));
+        try {
+            UserEntity savedUser = userDetailsService.save(user);
+            return ResponseEntity.ok(savedUser);
+        }catch (UserAlreadyExistsException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
     @RequestMapping(value = "/activate", method = RequestMethod.PUT)
     public ResponseEntity<?> updateStatus(@RequestParam String numberAsString){
         return new ResponseEntity<>(userDetailsService.updateStatus(numberAsString), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/addNote", method = RequestMethod.POST)
+    public ResponseEntity<?> addNote(@RequestBody NoteDTO note) throws Exception {
+
+        return ResponseEntity.ok(noteService.createNote(note));
+    }
+
+    // Fetches all notes of user
+    @RequestMapping(value = "/getNotes", method = RequestMethod.GET)
+    public ResponseEntity<?> getNoted() throws Exception {
+
+        return ResponseEntity.ok(noteService.getNotes());
     }
 
     private void authenticate(String username, String password) throws Exception {
