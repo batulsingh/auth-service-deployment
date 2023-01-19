@@ -11,4 +11,8 @@ public interface NoteService {
     Note createNote(NoteDTO noteDTO);
 
     List<Note> getNotes();
+
+    Note updateNote(long noteId, NoteDTO noteDTO);
+
+    boolean deleteNote(long noteId);
 }

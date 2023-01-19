@@ -34,15 +34,18 @@ public class NoteServiceImpl implements NoteService {
         long userId = userRepository.findByUsername(userName).getId();
         NoteEntity noteEntity = new NoteEntity();
         noteEntity.setCreatorId(userId);
-        noteEntity.setCreatedOn(LocalDate.now());
         noteEntity.setContent(noteDto.getContent());
+        noteEntity.setCreatedOn(LocalDate.now());
+        noteEntity.setUpdatedOn(LocalDate.now());
 
         NoteEntity savedNote = noteDao.saveNote(noteEntity);
 
         Note note = new Note();
+        note.setId(savedNote.getId());
         note.setContent(savedNote.getContent());
         note.setCreator(userName);
         note.setCreatedOn(savedNote.getCreatedOn());
+        note.setUpdatedOn(savedNote.getUpdatedOn());
         return note;
     }
 
@@ -56,12 +59,42 @@ public class NoteServiceImpl implements NoteService {
 
         noteEntities.forEach(it -> {
             Note note = new Note();
+            note.setId(it.getId());
             note.setContent(it.getContent());
             note.setCreator(userRepository.findById(it.getCreatorId()).getUsername());
             note.setCreatedOn(it.getCreatedOn());
+            note.setUpdatedOn(it.getUpdatedOn());
             noteList.add(note);
         });
 
+        noteList.sort((a,b) -> b.getCreatedOn().compareTo(a.getCreatedOn()));
+
         return noteList;
+    }
+
+    @Override
+    public Note updateNote(long noteId, NoteDTO noteDto) {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        long userId = userRepository.findByUsername(userName).getId();
+        NoteEntity noteEntity = new NoteEntity();
+        noteEntity.setId(noteId);
+        noteEntity.setCreatorId(userId);
+        noteEntity.setContent(noteDto.getContent());
+        noteEntity.setUpdatedOn(LocalDate.now());
+
+        NoteEntity savedNote = noteDao.updateNote(noteId, noteEntity);
+
+        Note note = new Note();
+        note.setId(savedNote.getId());
+        note.setContent(savedNote.getContent());
+        note.setCreator(userName);
+        note.setCreatedOn(savedNote.getCreatedOn());
+        note.setUpdatedOn(savedNote.getUpdatedOn());
+        return note;
+    }
+
+    @Override
+    public boolean deleteNote(long noteId) {
+        return noteDao.deleteNote(noteId);
     }
 }

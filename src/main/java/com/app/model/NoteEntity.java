@@ -21,6 +21,9 @@ public class NoteEntity {
     @Column(name = "CREATED_ON")
     private LocalDate createdOn;
 
+    @Column(name = "UPDATED_ON")
+    private LocalDate updatedOn;
+
     public long getId() {
         return id;
     }
@@ -51,5 +54,13 @@ public class NoteEntity {
 
     public void setCreatedOn(LocalDate createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public LocalDate getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public void setUpdatedOn(LocalDate updatedOn) {
+        this.updatedOn = updatedOn;
     }
 }

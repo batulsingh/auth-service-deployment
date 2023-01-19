@@ -100,11 +100,32 @@ public class Controller {
         return ResponseEntity.ok(noteService.createNote(note));
     }
 
-    // Fetches all notes of user
+    // Fetches all notes created by user
     @RequestMapping(value = "/getNotes", method = RequestMethod.GET)
-    public ResponseEntity<?> getNoted() throws Exception {
+    public ResponseEntity<?> getNotes() throws Exception {
 
         return ResponseEntity.ok(noteService.getNotes());
+    }
+
+    @RequestMapping(value = "/updateNote/{noteId}", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateNote(@RequestBody NoteDTO note, @PathVariable long noteId) throws Exception {
+        Note updateNote = noteService.updateNote(noteId, note);
+        if(updateNote.getCreatedOn() != null){
+            return ResponseEntity.ok(noteService.updateNote(noteId, note));
+        }else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @RequestMapping(value = "/deleteNote/{noteId}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteNote(@PathVariable long noteId) throws Exception {
+        boolean isNoteDeleted =  noteService.deleteNote(noteId);
+        if(isNoteDeleted){
+            return ResponseEntity.ok().build();
+        }else {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
     private void authenticate(String username, String password) throws Exception {
