@@ -1,9 +1,7 @@
 package com.app.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -19,10 +17,10 @@ public class NoteEntity {
     @Column(name = "CONTENT")
     private String content;
     @Column(name = "CREATED_ON")
-    private LocalDate createdOn;
+    private LocalDateTime createdOn;
 
     @Column(name = "UPDATED_ON")
-    private LocalDate updatedOn;
+    private LocalDateTime updatedOn;
 
     public long getId() {
         return id;
@@ -48,19 +46,19 @@ public class NoteEntity {
         this.content = content;
     }
 
-    public LocalDate getCreatedOn() {
+    public LocalDateTime getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(LocalDate createdOn) {
+    public void setCreatedOn(LocalDateTime createdOn) {
         this.createdOn = createdOn;
     }
 
-    public LocalDate getUpdatedOn() {
+    public LocalDateTime getUpdatedOn() {
         return updatedOn;
     }
 
-    public void setUpdatedOn(LocalDate updatedOn) {
+    public void setUpdatedOn(LocalDateTime updatedOn) {
         this.updatedOn = updatedOn;
     }
 }

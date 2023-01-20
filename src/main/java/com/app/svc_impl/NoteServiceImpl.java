@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +34,8 @@ public class NoteServiceImpl implements NoteService {
         NoteEntity noteEntity = new NoteEntity();
         noteEntity.setCreatorId(userId);
         noteEntity.setContent(noteDto.getContent());
-        noteEntity.setCreatedOn(LocalDate.now());
-        noteEntity.setUpdatedOn(LocalDate.now());
+        noteEntity.setCreatedOn(LocalDateTime.now());
+        noteEntity.setUpdatedOn(LocalDateTime.now());
 
         NoteEntity savedNote = noteDao.saveNote(noteEntity);
 
@@ -80,7 +79,7 @@ public class NoteServiceImpl implements NoteService {
         noteEntity.setId(noteId);
         noteEntity.setCreatorId(userId);
         noteEntity.setContent(noteDto.getContent());
-        noteEntity.setUpdatedOn(LocalDate.now());
+        noteEntity.setUpdatedOn(LocalDateTime.now());
 
         NoteEntity savedNote = noteDao.updateNote(noteId, noteEntity);
 

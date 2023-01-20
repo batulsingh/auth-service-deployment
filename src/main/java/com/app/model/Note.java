@@ -1,16 +1,14 @@
 package com.app.model;
 
-import org.apache.tomcat.jni.Local;
-
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Note {
     long id;
     String content;
     String creator;
-    LocalDate createdOn;
+    LocalDateTime createdOn;
 
-    LocalDate updatedOn;
+    LocalDateTime updatedOn;
 
     public long getId() {
         return id;
@@ -36,19 +34,19 @@ public class Note {
         this.creator = creator;
     }
 
-    public LocalDate getCreatedOn() {
+    public LocalDateTime getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(LocalDate createdOn) {
+    public void setCreatedOn(LocalDateTime createdOn) {
         this.createdOn = createdOn;
     }
 
-    public LocalDate getUpdatedOn() {
+    public LocalDateTime getUpdatedOn() {
         return updatedOn;
     }
 
-    public void setUpdatedOn(LocalDate updatedOn) {
+    public void setUpdatedOn(LocalDateTime updatedOn) {
         this.updatedOn = updatedOn;
     }
 }
