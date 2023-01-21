@@ -49,7 +49,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         newUser.setStatus("Blocked");
         UserEntity ExistingUser = userRepository.findByUsername(user.getUsername());
         if (ExistingUser != null) {
-            throw new UserAlreadyExistsException("Username Unavailable");
+            throw new UserAlreadyExistsException("An account associated with this email already exists");
         }
 
        // kafkaTemplate.send(TOPIC, new UserDTO(newUser.getUsername(), "", ""));

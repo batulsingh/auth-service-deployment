@@ -96,8 +96,11 @@ public class Controller {
 
     @RequestMapping(value = "/addNote", method = RequestMethod.POST)
     public ResponseEntity<?> addNote(@RequestBody NoteDTO note) throws Exception {
-
-        return ResponseEntity.ok(noteService.createNote(note));
+        if(note.getContent().isEmpty()){
+            return ResponseEntity.badRequest().build();
+        }else {
+            return ResponseEntity.ok(noteService.createNote(note));
+        }
     }
 
     // Fetches all notes created by user
